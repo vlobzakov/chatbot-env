@@ -63,10 +63,8 @@ onInstall:
 - restartContainers:
     nodeGroup: cp
 - cmd[nosqldb]:
-  - mongo --port 27017 -u admin -p ${globals.mongodb_password} --authenticationDatabase admin <<EOF
-    use onprembot;
-    db.author.insert({ authorname: "RAVATAR" })
-    EOF
+  - wget ${baseUrl}/scripts/mongodb-create.sh -O ~/mongodb-create.sh
+  - sh ~/mongodb-create.sh ${globals.mongodb_password}
 - cmd[vectordb]:
   - wget ${baseUrl}/scripts/chromadb-install.sh -O ~/chromadb-install.sh
   - sh ~/chromadb-install.sh
