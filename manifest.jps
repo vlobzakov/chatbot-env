@@ -1,0 +1,90 @@
+type: install
+version: 0.99
+id: node-red-dev
+name: Node-RED Dev
+logo: images/ravatar-logo70x70.png
+description:
+  text: AI focused application and development environment based on low-code Node-RED framework, CromaDB vector and MongoDB NoSQL databases. Provides web-based editor with a wide range of nodes to connect and deploy flows.
+  short: AI focused application and development environment to create self-trained AI solutions in the Cloud.
+
+baseUrl: https://raw.githubusercontent.com/vlobzakov/chatbot-env/master/
+
+categories:
+- apps/dev-and-admin-tools
+
+globals:
+  mongodb_password: ${fn.password}
+  wsPort: 1880
+  redirPort: 7654
+
+#onBeforeInit: scripts/onBeforeInit.js
+
+nodes:
+- nodeType: nginx
+  cloudlets: 8
+  nodeGroup: bl
+  fixedCloudlets: 1
+- nodeType: mongodb
+  count: 1
+  cloudlets: 10
+  fixedCloudlets: 1
+  nodeGroup: nosqldb
+  password: ${globals.mongodb_password}
+- cloudlets: 8
+  fixedCloudlets: 1
+  displayName: Node-RED
+  image: nodered/node-red
+  nodeGroup: cp
+- nodeType: dockerengine
+  count: 1
+  cloudlets: 24
+  fixedCloudlets: 1
+  displayName: ChromaDB
+  nodeGroup: vectordb
+
+ssl: true
+
+onInstall:
+- cmd[bl]: |-
+    sed 's/server ${nodes.cp.intIP};   ### DEFUPPROTO/server ${nodes.cp.intIP}:${globals.wsPort};   ### DEFUPPROTO/g' -i /etc/nginx/nginx-jelastic.conf
+  user: root
+- restartContainers:
+    nodeGroup: bl
+- cmd[cp]:
+  - wget ${baseUrl}/scripts/iptables-load -O /etc/network/if-pre-up.d/iptables-load
+  - wget ${baseUrl}/scripts/iptables-save -O /etc/network/if-post-down.d/iptables-save
+  - chmod +x /etc/network/if-pre-up.d/iptables-load
+  - chmod +x /etc/network/if-post-down.d/iptables-save
+  - wget ${baseUrl}/scripts/creds-replace.sh -O /root/creds-replace.sh
+  - wget ${baseUrl}/scripts/creds-replace.js -O /root/creds-replace.js
+  - sh /root/creds-replace.sh
+  - env.control.AddContainerEnvVars[${targetNodes.nodeGroup}]:
+      vars: {"nodeUrl":"http://${env.domain}","nodeUrlS":"https://${env.domain}","chromaPath":"http://${nodes.vectordb.intIP}:8000","mongoHost":"node${nodes.sqldb.master.id}-${env.domain}","mongoName":"onprembot","mongoPassword":"${globals.mongodb_password}","mongoUserName":"admin"}
+- restartContainers:
+    nodeGroup: cp
+- cmd[nosqldb]:
+  - mongo --port 27017 -u admin -p ${globals.mongodb_password} --authenticationDatabase admin <<EOF
+    use onprembot;
+    db.author.insert({ authorname: "RAVATAR" })
+    EOF
+- cmd[vectordb]:
+  - wget ${baseUrl}/scripts/chromadb-install.sh -O ~/chromadb-install.sh
+  - sh ~/chromadb-install.sh
+
+success: |
+   Start building your AI solutions just now - click Open in Browser for the dedicated web-based editor launch.  
+     
+   Node-red editor credentials:  
+   Admin Panel: **https://${env.domain}**  
+   username: **admin**  
+   password: **ravabot2pwd**  
+   Use env name **nodeUrl** for internal requests  
+   Use env name **nodeUrlS** for exnternal requests  
+   Do not forget to change password after installation with command **node-red admin hash-pw** and update **/data/settings.js**  
+     
+   MongoDB credentials:  
+   DB Connection: **${nodes.nosqldb.intIP}:27017**   
+   username: **admin**  
+   password: **${globals.mongodb_password}**  
+     
+   Vector DB connection: **${nodes.vectordb.intIP}:8000**  
