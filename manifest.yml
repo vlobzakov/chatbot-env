@@ -1,7 +1,7 @@
 type: install
 version: 0.99
-id: node-red-dev
-name: ChatBot Env
+id: chatbot-dev
+name: ChatBot Development Environment
 logo: images/ravatar-logo-anime.gif
 description:
   text: AI focused application and development environment based on low-code Node-RED framework, ChromaDB vector and MongoDB NoSQL databases. Provides web-based editor with a wide range of nodes to connect and deploy flows.
