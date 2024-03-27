@@ -62,6 +62,7 @@ onInstall:
   - wget ${baseUrl}/scripts/projects-enable.js -O ~/projects-enable.js
   - sh ~/projects-enable.sh
   - chown node-red:node-red /data/flows.json
+  - rc-service crond start && rc-update add crond
 - env.control.AddContainerEnvVars[cp]:
     vars: {"nodeUrl":"http://${env.domain}","nodeUrlS":"https://${env.domain}","chromaPath":"http://${nodes.vectordb.intIP}:8000","mongoHost":"node${nodes.nosqldb.master.id}-${env.domain}","mongoName":"onprembot","mongoPassword":"${globals.mongodb_password}","mongoUserName":"admin"}
 - restartContainers:
