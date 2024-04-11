@@ -81,7 +81,7 @@ onInstall:
   - sh ~/chromadb-install.sh
 - cmd[appsmith]:
   - wget ${baseUrl}/scripts/appsmith-install.sh -O ~/appsmith-install.sh
-  - sh ~/appsmith-install.sh
+  - sh ~/appsmith-install.sh node${nodes.appsmith.master.id}-${env.domain}
 success: |
    Start building your AI solutions just now - click Open in Browser for the dedicated web-based editor launch.  
      
