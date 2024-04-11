@@ -30,7 +30,7 @@ nodes:
   fixedCloudlets: 1
   nodeGroup: nosqldb
   password: ${globals.mongodb_password}
-- cloudlets: 8
+- cloudlets: 32
   fixedCloudlets: 1
   displayName: Node-RED
   image: nodered/node-red
@@ -41,7 +41,13 @@ nodes:
   fixedCloudlets: 1
   displayName: ChromaDB
   nodeGroup: vectordb
-
+- nodeType: dockerengine
+  count: 1
+  cloudlets: 32
+  fixedCloudlets: 1
+  displayName: AppSmith
+  nodeGroup: appsmith
+  
 ssl: true
 
 onInstall:
@@ -73,7 +79,9 @@ onInstall:
 - cmd[vectordb]:
   - wget ${baseUrl}/scripts/chromadb-install.sh -O ~/chromadb-install.sh
   - sh ~/chromadb-install.sh
-
+- cmd[appsmith]:
+  - wget ${baseUrl}/scripts/appsmith-install.sh -O ~/appsmith-install.sh
+  - sh ~/appsmith-install.sh
 success: |
    Start building your AI solutions just now - click Open in Browser for the dedicated web-based editor launch.  
      
@@ -91,3 +99,5 @@ success: |
    password: **${globals.mongodb_password}**  
      
    Vector DB connection: **${nodes.vectordb.intIP}:8000**  
+     
+   RAVAPLA Admin panel: **https://node${nodes.appsmith.master.id}-${env.domain}**  
