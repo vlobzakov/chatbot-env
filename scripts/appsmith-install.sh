@@ -1,4 +1,4 @@
-echo<< EOF > docker-compose.yml
+cat<< EOF > docker-compose.yml
 version: "3"
 services:
   appsmith:
@@ -8,8 +8,8 @@ services:
          - "443:443"
          - "80:80"
      environment:
-      - nodeUrlS=https://node@ARGV[1]
-      - nodeUrl=http://node@ARGV[1]
+      - nodeUrlS=https://$1
+      - nodeUrl=http://$1
      volumes:
          - ./stacks:/appsmith-stacks
      restart: unless-stopped
