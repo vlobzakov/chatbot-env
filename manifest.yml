@@ -14,6 +14,7 @@ categories:
 
 globals:
   mongodb_password: ${fn.password}
+  nodered_password: ${fn.password}
   wsPort: 1880
   redirPort: 7654
 
@@ -63,7 +64,7 @@ onInstall:
   - chmod +x /etc/network/if-post-down.d/iptables-save
   - wget ${baseUrl}/scripts/creds-replace.sh -O ~/creds-replace.sh
   - wget ${baseUrl}/scripts/creds-replace.js -O ~/creds-replace.js
-  - sh ~/creds-replace.sh
+  - sh ~/creds-replace.sh ${globals.nodered_password}
   - wget ${baseUrl}/scripts/projects-enable.sh -O ~/projects-enable.sh
   - wget ${baseUrl}/scripts/projects-enable.js -O ~/projects-enable.js
   - sh ~/projects-enable.sh
@@ -88,7 +89,7 @@ success: |
    Node-red editor credentials:  
    Admin Panel: **https://${env.domain}**  
    username: **admin**  
-   password: **ravabot2pwd**  
+   password: **${globals.nodered_password}**  
    Use env name **nodeUrl** for internal requests  
    Use env name **nodeUrlS** for exnternal requests  
    Do not forget to change password after installation with command **node-red admin hash-pw** and update **/data/settings.js**  
