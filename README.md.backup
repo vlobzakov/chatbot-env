@@ -1,0 +1,76 @@
+![node-red-logo](images/Logo_Ravatar_Black.svg)
+
+# RAVAPLA in PaaS
+This rtepository describes how the RAVAPLA infrastructure can be provisioned in Jelastic PaaS
+
+RAVAPLA(RAVATAR Platform) comprises several elements:
+- Node-Red low code node to manage RAVATAR solutions' logic and interconnect all the services(LLM, TTS, STT, VectorDB, ChatBots, 3D Avatars) 
+- ChromaDB Vector database 
+- NoSQL MongoDB database 
+- Loadbalancer
+- AppSmith Admin Panel to manage platform settings, interact with databases, do RAG based training, VectorDB anasysis, manage Avatars settings, manage AI pipeline components, etc. 
+
+## How to Deploy RAVAPLA Infrastructure in PaaS
+ 
+In order to get RAVAPLA Environment instantly deployed log in to Jelastic dashboard with your credentials and [import](https://docs.jelastic.com/environment-import) the URL to the **_manifest.jps_** file above.
+ 
+![node-red-installation](images/ravapla-install.png)
+
+In the opened installation dialog box, type a name and, optionally, *Display Name* ([alias](https://docs.jelastic.com/environment-aliases))  for your *Environment*, select a _[Region](https://docs.jelastic.com/environment-regions)_ it will be placed at (if several ones are available) and click **Install**.
+ 
+## Node-RED Development Environment 
+ 
+Prepackaged [Node-RED](https://nodered.org/) programming tool for connecting online services, hardware devices and APIs through an interactive browser-based editor.
+ 
+### Node-RED Package Specifics
+ 
+Providing ready-to-go Node-RED, the current solution has the following implementation specifics:
+ 
+- based on [nodered/node-red-docker](https://hub.docker.com/r/nodered/node-red-docker/) Docker image with the _latest_ tag as a solution base
+- created Node-RED instance is assigned *16 dynamic cloudlets*, which enable it to [scale out](https://docs.jelastic.com/automatic-vertical-scaling) up to 6 GiB of RAM and 6.4 GHz of CPU
+- automatically attached [endpoint](https://docs.jelastic.com/endpoints) allows to access your Node-RED admin panel through a randomly allocated [Shared Load Balancer](https://docs.jelastic.com/shared-load-balancer) port, eliminating the necessity to purchase Public IP address
+Node-Red service can be accessed by the environment domain name. So, just click on the **Open in Browser** button to log into the development window as on the picture below.
+
+![nodered-admin](images/noder-red-admin.png)
+
+**If required** the password of administrator user can be changed. To do this, open built-in SSH client and issue command to generate a password hash as on the picture below.
+
+![nodered-password](images/node-red-new-password.png)
+
+Copy genereated hash and replace old one in **/data/settings.js** file on Node-Red node.
+
+![nodered-settings](images/node-red-settings.png)
+
+Restart the Node-Red node once the */data/settings.js* file had updated.
+
+![nodered-restart](images/node-red-restart.png)
+
+Installation manifest passes to the Node-Red node several Environment Variables. Variables description canbe fond in documentation.
+
+![nodered-env-vars](images/node-red-envs.png)
+
+### MongoDB Specifics
+ 
+MongoDB database is used to store different sorts of metadata realted to the users, chatbots, 3D avatars, credentials, API keys, etc.
+Providing ready-to-go MongoDB database, the current solution has the following implementation specifics:
+ 
+- By default the manifest creates database called as **onprembot** where all the data is stored.
+
+
+ 
+### AppSmith Admin Panel Specifics
+ 
+As an admin panel the AppSmith application has been chosen. As the Node-Red it also deployed as docker container inside Jelastic Docker engine certified image.
+
+When deployment is completed, you’ll see the appropriate pop-up with the URLs and credentials. 
+
+![nodered-success-message](images/success-message.png)
+
+Upon installation you have only the URL to the AppSmith. Following this URL  admin panel MUST BE initialized right after the installation since it goes open to everybody for the first launch and initialization.
+
+![nodered-success-message](images/app-smith.png)
+
+
+To find more details on Node-RED Development Environment refer to the appropriate detailed [guide](http://ravatar.com/docs-node-red/).
+
+Happy building your AI solution
