@@ -1,7 +1,7 @@
 ![node-red-logo](images/Logo_Ravatar_Black.svg)
 
 # RAVAPLA in PaaS
-This rtepository describes how the RAVAPLA infrastructure can be provisioned in Jelastic PaaS
+This repository describes how the RAVAPLA infrastructure can be provisioned in Jelastic PaaS
 
 RAVAPLA(RAVATAR Platform) comprises several elements:
 - Node-Red low code node to manage RAVATAR solutions' logic and interconnect all the services(LLM, TTS, STT, VectorDB, ChatBots, 3D Avatars) 
@@ -51,7 +51,7 @@ Installation manifest passes to the Node-Red node several Environment Variables.
 
 ### MongoDB Specifics
  
-MongoDB database is used to store different sorts of metadata realted to the users, chatbots, 3D avatars, credentials, API keys, etc.
+MongoDB database is used to store different sorts of metadata related to the users, chatbots, 3D avatars, credentials, API keys, etc.
 Providing ready-to-go MongoDB database, the current solution has the following implementation specifics:
  
 - By default the manifest creates database called as **onprembot** where all the data is stored.
@@ -66,7 +66,7 @@ When deployment is completed, you’ll see the appropriate pop-up with the URLs 
 
 ![nodered-success-message](images/success-message.png)
 
-Upon installation you have only the URL to the AppSmith. Following this URL  admin panel MUST BE initialized right after the installation since it goes open to everybody for the first launch and initialization.
+Upon installation you have only the URL to the AppSmith. Following this URL  the admin panel MUST BE initialized right after the installation since it goes open to everybody for the first launch and initialization.
 
 ![nodered-success-message](images/app-smith.png)
 
